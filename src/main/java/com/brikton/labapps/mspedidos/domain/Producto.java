@@ -1,11 +1,13 @@
 package com.brikton.labapps.mspedidos.domain;
 
-public class Obra {
-    
+public class Producto {
+
     private Integer id;
     private String descripcion;
-
-    public Obra(){}
+    private Double precio;
+   
+    public Producto() {
+    }
 
     public Integer getId() {
         return id;
@@ -21,7 +23,14 @@ public class Obra {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    };
+    }
+
+    public Double getPrecio() {
+        return precio;
+    }
+    
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
 
 }
-    

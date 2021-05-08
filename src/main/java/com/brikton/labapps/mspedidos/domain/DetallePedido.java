@@ -4,37 +4,35 @@ package com.brikton.labapps.mspedidos.domain;
 public class DetallePedido {
 	
 	private Integer id;
-	private Material material;
-	private Double cantidad;
-
-	public DetallePedido(Material material, int id, double cantidad) {
-		this.id = id;
-		this.material = material;
-		this.cantidad = cantidad;
-    }
-    public DetallePedido() {
-    }
-    public Integer getId() {
+	private Integer cantidad;
+	private Double precio;
+	private Producto producto;
+	
+	public DetallePedido(){}
+	
+	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public Double getCantidad() {
+	public Integer getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(Double cantidad) {
+	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
 	}
-	public Material getMaterial() {
-		return material;
+	public Double getPrecio() {
+		return precio;
 	}
-	public void setMaterial(Material material) {
-		this.material = material;
+	public void setPrecio(Double precio) {
+		this.precio = precio;
 	}
-	public Double getPrecio(){
-		//return material.getPrecio() * cantidad;
-		return cantidad;
-	}	
+	public Producto getProducto() {
+		return producto;
+	}
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
 }
