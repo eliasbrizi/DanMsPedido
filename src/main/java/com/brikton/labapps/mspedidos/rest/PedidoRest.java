@@ -1,16 +1,19 @@
 package com.brikton.labapps.mspedidos.rest;
 
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
+import com.brikton.labapps.mspedidos.domain.EstadoPedido;
 import com.brikton.labapps.mspedidos.domain.Pedido;
+import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
 import com.brikton.labapps.mspedidos.exception.RiesgoException;
 import com.brikton.labapps.mspedidos.service.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,10 +61,23 @@ public class PedidoRest {
         return valido;
     }
 
-    @PatchMapping(path = "/{id}")
-    public Pedido actualizarEstadoPedido(@PathVariable Integer id){
-        //TODO
+    // @PatchMapping(path = "/{id}")
+    // public Pedido actualizarEstadoPedido(@PathVariable Integer id){
+    //     //TODO
+    //     Pedido pedido = null;
+    //     return pedido;
+    // }
+
+    @PutMapping()
+    public ResponseEntity<Pedido> actualizarEstadoPedido(@RequestAttribute("id") Integer id,
+                                    @RequestAttribute("estado") String nuevoEstado){
         Pedido pedido = null;
-        return pedido;
+        try {
+            pedido = pedidoService.actualizarEstadoPedido(id,EstadoPedido.valueOf(nuevoEstado.toUpperCase()));
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return ResponseEntity.ok(pedido);
     }
 }
