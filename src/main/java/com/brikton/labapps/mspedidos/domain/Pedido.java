@@ -3,12 +3,28 @@ package com.brikton.labapps.mspedidos.domain;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+
+@Entity
 public class Pedido {
 
+    @Id
+    @Column(name = "id_pedido")
     private Integer id;
 	private Instant fechaPedido;
+    @OneToOne
+    @JoinColumn(name = "id_obra")
     private Obra obra;
     private EstadoPedido estado;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_pedido")
     private List<DetallePedido> detalle;
 
     

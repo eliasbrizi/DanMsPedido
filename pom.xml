@@ -12,7 +12,7 @@
 	<artifactId>ms-pedidos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-pedidos</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Microservicio de pedidos</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -30,6 +30,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 

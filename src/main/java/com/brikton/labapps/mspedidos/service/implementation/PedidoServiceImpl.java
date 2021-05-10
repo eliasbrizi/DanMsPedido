@@ -1,5 +1,6 @@
 package com.brikton.labapps.mspedidos.service.implementation;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.brikton.labapps.mspedidos.dao.PedidoRepository;
@@ -70,23 +71,23 @@ public class PedidoServiceImpl implements PedidoService {
         Optional<Pedido> pedido = null;
 		pedido = pedidoRepository.findById(idPedido);
 		if (pedido.isPresent()) {
-			/*
-			Logica de actualizar
-			*/
-			//TODO b y c, y ademas esto solo es para pasar a confirmado
-			if (existeStock(pedido.get())){
-				if (/* b o c */){
-					pedido.get().setEstado(EstadoPedido.ACEPTADO);
-					pedidoRepository.save(pedido.get());
-				} else {
-					pedido.get().setEstado(EstadoPedido.RECHAZADO);
-					pedidoRepository.save(pedido.get());
-					throw new GeneraSaldoDeudorException("El pedido" + idPedido +" genera saldo deudor");
-				}
-			} else {
-				pedido.get().setEstado(EstadoPedido.PENDIENTE);
-				pedidoRepository.save(pedido.get());
-			}
+			// /*
+			// Logica de actualizar
+			// */
+			// //TODO b y c, y ademas esto solo es para pasar a confirmado
+			// if (existeStock(pedido.get())){
+			// 	if (/* b o c */){
+			// 		pedido.get().setEstado(EstadoPedido.ACEPTADO);
+			// 		pedidoRepository.save(pedido.get());
+			// 	} else {
+			// 		pedido.get().setEstado(EstadoPedido.RECHAZADO);
+			// 		pedidoRepository.save(pedido.get());
+			// 		throw new GeneraSaldoDeudorException("El pedido" + idPedido +" genera saldo deudor");
+			// 	}
+			// } else {
+			// 	pedido.get().setEstado(EstadoPedido.PENDIENTE);
+			// 	pedidoRepository.save(pedido.get());
+			// }
 			return pedido.get();
 		}
 		else throw new RecursoNoEncontradoException("No se encontro el pedido: ", idPedido);
@@ -95,5 +96,23 @@ public class PedidoServiceImpl implements PedidoService {
 	private boolean existeStock(Pedido p){
 		//TODO
 		return true;
+	}
+
+	@Override
+	public ArrayList<Pedido> pedidosPorObra(Integer idObra) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Pedido> pedidosPorEstado(EstadoPedido valueOf) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Pedido> pedidosPorCliente(Integer idCliente) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

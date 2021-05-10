@@ -1,7 +1,15 @@
 package com.brikton.labapps.mspedidos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import javax.persistence.Id;
+
+@Entity
 public class Obra {
     
+    @Id
+    @Column(name = "id_obra")
     private Integer id;
     private String descripcion;
 

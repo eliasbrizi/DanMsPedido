@@ -1,11 +1,22 @@
 package com.brikton.labapps.mspedidos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
+
+@Entity
 public class DetallePedido {
 	
+	@Id
+	@Column(name = "id_detalle")
 	private Integer id;
 	private Integer cantidad;
 	private Double precio;
+	@OneToOne
+	@JoinColumn(name = "id_producto")
 	private Producto producto;
 	
 	public DetallePedido(){}

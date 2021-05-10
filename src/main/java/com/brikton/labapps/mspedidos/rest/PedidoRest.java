@@ -1,5 +1,8 @@
 package com.brikton.labapps.mspedidos.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
 import com.brikton.labapps.mspedidos.domain.EstadoPedido;
 import com.brikton.labapps.mspedidos.domain.Pedido;
@@ -10,12 +13,12 @@ import com.brikton.labapps.mspedidos.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -61,16 +64,9 @@ public class PedidoRest {
         return valido;
     }
 
-    // @PatchMapping(path = "/{id}")
-    // public Pedido actualizarEstadoPedido(@PathVariable Integer id){
-    //     //TODO
-    //     Pedido pedido = null;
-    //     return pedido;
-    // }
-
-    @PutMapping()
-    public ResponseEntity<Pedido> actualizarEstadoPedido(@RequestAttribute("id") Integer id,
-                                    @RequestAttribute("estado") String nuevoEstado){
+    @PutMapping
+    public ResponseEntity<Pedido> actualizarEstadoPedido(@RequestParam Integer id,
+                                    @RequestParam String nuevoEstado){
         Pedido pedido = null;
         try {
             pedido = pedidoService.actualizarEstadoPedido(id,EstadoPedido.valueOf(nuevoEstado.toUpperCase()));
@@ -79,5 +75,26 @@ public class PedidoRest {
         }
 
         return ResponseEntity.ok(pedido);
+    }
+
+    @GetMapping(path = "/obra")
+    public ResponseEntity<List<Pedido>> pedidosPorObra(@RequestParam Integer idObra){
+        ArrayList<Pedido> pedidos = new ArrayList<>();
+        pedidos = pedidoService.pedidosPorObra(idObra);
+        return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping(path = "/estado")
+    public ResponseEntity<List<Pedido>> pedidosPorEstado(@RequestParam String estadoPedido){
+        ArrayList<Pedido> pedidos = new ArrayList<>();
+        pedidos = pedidoService.pedidosPorEstado(EstadoPedido.valueOf(estadoPedido));
+        return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping(path = "/cliente")
+    public ResponseEntity<List<Pedido>> pedidosPorCliente(@RequestParam Integer idCliente){
+        ArrayList<Pedido> pedidos = new ArrayList<>();
+        pedidos = pedidoService.pedidosPorCliente(idCliente);
+        return ResponseEntity.ok(pedidos);
     }
 }
