@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
 import com.brikton.labapps.mspedidos.domain.EstadoPedido;
+import com.brikton.labapps.mspedidos.domain.Obra;
 import com.brikton.labapps.mspedidos.domain.Pedido;
-import com.brikton.labapps.mspedidos.exception.GeneraSaldoDeudorException;
 import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
 import com.brikton.labapps.mspedidos.exception.RiesgoException;
 import com.brikton.labapps.mspedidos.service.PedidoService;
@@ -73,7 +73,7 @@ public class PedidoRest {
             pedido = pedidoService.actualizarEstadoPedido(id,EstadoPedido.valueOf(nuevoEstado.toUpperCase()));
         } catch (RecursoNoEncontradoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (GeneraSaldoDeudorException e1) {
+        } catch (RiesgoException e1) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -81,9 +81,9 @@ public class PedidoRest {
     }
 
     @GetMapping(path = "/obra")
-    public ResponseEntity<List<Pedido>> pedidosPorObra(@RequestParam Integer idObra){
+    public ResponseEntity<List<Pedido>> pedidosPorObra(@RequestBody Obra obra){
         ArrayList<Pedido> pedidos = new ArrayList<>();
-        pedidos = pedidoService.pedidosPorObra(idObra);
+        pedidos = pedidoService.pedidosPorObra(obra);
         return ResponseEntity.ok(pedidos);
     }
 
@@ -97,7 +97,11 @@ public class PedidoRest {
     @GetMapping(path = "/cliente")
     public ResponseEntity<List<Pedido>> pedidosPorCliente(@RequestParam Integer idCliente){
         ArrayList<Pedido> pedidos = new ArrayList<>();
-        pedidos = pedidoService.pedidosPorCliente(idCliente);
+        try {
+            pedidos = pedidoService.pedidosPorCliente(idCliente);
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return ResponseEntity.ok(pedidos);
     }
 }
