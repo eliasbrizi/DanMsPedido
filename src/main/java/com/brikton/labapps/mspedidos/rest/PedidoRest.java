@@ -6,6 +6,7 @@ import java.util.List;
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
 import com.brikton.labapps.mspedidos.domain.EstadoPedido;
 import com.brikton.labapps.mspedidos.domain.Pedido;
+import com.brikton.labapps.mspedidos.exception.GeneraSaldoDeudorException;
 import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
 import com.brikton.labapps.mspedidos.exception.RiesgoException;
 import com.brikton.labapps.mspedidos.service.PedidoService;
@@ -71,6 +72,8 @@ public class PedidoRest {
         try {
             pedido = pedidoService.actualizarEstadoPedido(id,EstadoPedido.valueOf(nuevoEstado.toUpperCase()));
         } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (GeneraSaldoDeudorException e1) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 

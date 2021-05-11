@@ -1,9 +1,11 @@
 package com.brikton.labapps.mspedidos.rest;
 
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
+import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
 import com.brikton.labapps.mspedidos.service.DetallePedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,16 +25,31 @@ public class DetallePedidoRest {
 
     @PostMapping()
     public ResponseEntity<?> agregarItem(@RequestBody DetallePedido detalle, @RequestParam Integer idPedido){
-        service.agregarDetalle(detalle,idPedido);
+        try {
+            detalle = service.agregarDetalle(detalle,idPedido);
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(detalle);
     }
 
     @PutMapping
     public ResponseEntity<?> modificarDetalle(@RequestBody DetallePedido detalle){
-        service.actualizarDetalle(detalle);
+        try {
+            service.actualizarDetalle(detalle);
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<?> eliminarDetalle(@RequestBody DetallePedido detalle){
-        service.eliminarDetalle(detalle);
+        try {
+            service.eliminarDetalle(detalle);
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

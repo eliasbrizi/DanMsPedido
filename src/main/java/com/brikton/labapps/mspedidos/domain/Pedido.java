@@ -64,5 +64,9 @@ public class Pedido {
         this.estado = estado;
     }
 
+    public void agregarDetalle(DetallePedido detalle2) {
+        this.detalle.add(detalle2);
+    }
+
 
 }
