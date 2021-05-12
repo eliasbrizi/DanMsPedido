@@ -24,24 +24,20 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Double deudaCliente(Obra obra) throws RecursoNoEncontradoException {
-        // TODO Auto-generated method stub
-
+        // TODO ver con tamara
         String server = urlServer+":"+puerto+"/"+apiCliente;
-
 		ResponseEntity<Double> respuesta = restTemplate.exchange(server+"/saldo?idObra="+obra.getId(), HttpMethod.GET, null , Double.class);
 		if (respuesta.getStatusCode() == HttpStatus.OK) return respuesta.getBody();
         else throw new RecursoNoEncontradoException("No se obtuvo respuesta con saldo deudor",0);
-
     }
 
     @Override
     public List<Obra> getObrasCliente(Integer idCliente) throws RecursoNoEncontradoException {
-        // TODO Auto-generated method stub
+        // TODO ver con tamara
         String server = urlServer+":"+puerto+"/"+apiCliente;
 		ResponseEntity<List<Obra>> respuesta = restTemplate.exchange(server+"/obra?idCliente="+idCliente, HttpMethod.GET, null , 
         new ParameterizedTypeReference<List<Obra>>(){});
 		if (respuesta.getStatusCode() == HttpStatus.OK) return respuesta.getBody();
         else throw new RecursoNoEncontradoException("No se obtuvo respuesta con saldo deudor",0);
     }
-    
 }

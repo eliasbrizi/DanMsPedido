@@ -1,6 +1,6 @@
 package com.brikton.labapps.mspedidos.dao;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.brikton.labapps.mspedidos.domain.Pedido;
 
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido,Integer> {
+// TODO las querys
+    @Query("select p from Pedido p where p.obra = :idObra")
+    List<Pedido> getPedidosPorObra(@Param("idObra") Integer idObra);
 
-    @Query("select p from Pedidos p where p.id_obra = :idObra")
-    ArrayList<Pedido> getPedidosPorObra(@Param("idObra") Integer idObra);
-
-    @Query("select p from Pedidos p where p.estado = :estadoPedido")
-    ArrayList<Pedido> getPedidosPorEstado(@Param("estadoPedido") int estadoPedido);
+    @Query("select p from Pedido p where p.estado = :estadoPedido")
+    List<Pedido> getPedidosPorEstado(@Param("estadoPedido") int estadoPedido);
 }

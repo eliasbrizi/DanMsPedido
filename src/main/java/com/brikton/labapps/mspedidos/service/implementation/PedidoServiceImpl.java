@@ -67,54 +67,89 @@ public class PedidoServiceImpl implements PedidoService {
         Optional<Pedido> pedido = null;
 		pedido = pedidoRepository.findById(idPedido);
 		if (pedido.isPresent()) {
-			/*
-			Logica de actualizar
-			*/
+			
 			Pedido p = pedido.get();
-			boolean hayStock = p.getDetalle()
-			.stream()
-			.allMatch(dp -> verificarStock(dp.getProducto(),dp.getCantidad()));
+			EstadoPedido e = pedido.get().getEstado();
 			
-			Double totalOrden = p.getDetalle()
-			.stream()
-			.mapToDouble( dp -> dp.getCantidad() * dp.getPrecio())
-			.sum();
-			
-			Double saldoCliente = clienteSrv.deudaCliente(p.getObra());		
-			Double nuevoSaldo = saldoCliente - totalOrden;
-			
-			Boolean generaDeuda= nuevoSaldo<0;
-			if(hayStock ) {
-				if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
-					p.setEstado(EstadoPedido.ACEPTADO);
+			if (nuevoEstadoPedido == EstadoPedido.CONFIRMADO){
+				/*
+				Logica de actualizar un pedido confirmado
+				*/
+				boolean hayStock = p.getDetalle()
+				.stream()
+				.allMatch(dp -> verificarStock(dp.getProducto(),dp.getCantidad()));
+				
+				Double totalOrden = p.getDetalle()
+				.stream()
+				.mapToDouble( dp -> dp.getCantidad() * dp.getPrecio())
+				.sum();
+				
+				Double saldoCliente = clienteSrv.deudaCliente(p.getObra());		
+				Double nuevoSaldo = saldoCliente - totalOrden;
+				
+				Boolean generaDeuda= nuevoSaldo<0;
+				if(hayStock ) {
+					if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
+						p.setEstado(EstadoPedido.ACEPTADO);
+					} else {
+						p.setEstado(EstadoPedido.RECHAZADO);
+						pedidoRepository.save(p);
+						throw new RiesgoException("El pedido" + idPedido +" genera saldo deudor");
+					}
 				} else {
-					p.setEstado(EstadoPedido.RECHAZADO);
-					pedidoRepository.save(p);
-					throw new RiesgoException("El pedido" + idPedido +" genera saldo deudor");
+					p.setEstado(EstadoPedido.PENDIENTE);
 				}
-			} else {
-				p.setEstado(EstadoPedido.PENDIENTE);
+				return this.pedidoRepository.save(p);
+			} else if (nuevoEstadoPedido == EstadoPedido.CANCELADO) {
+				/*
+				Logica de cancelar pedido
+				*/
+				if (e == EstadoPedido.NUEVO || e == EstadoPedido.CONFIRMADO
+				|| e == EstadoPedido.PENDIENTE ) {
+					p.setEstado(EstadoPedido.CANCELADO);
+					return this.pedidoRepository.save(p);
+				}
+			} else if (nuevoEstadoPedido == EstadoPedido.EN_PREPARACION) {
+				/*
+				Logica en preparacion
+				*/
+				if (e == EstadoPedido.CONFIRMADO ) {
+					p.setEstado(EstadoPedido.EN_PREPARACION);
+					return this.pedidoRepository.save(p);
+				}
+			} else if (nuevoEstadoPedido == EstadoPedido.ENTREGADO) {
+				/*
+				Logica entregado
+				*/
+				if (e == EstadoPedido.EN_PREPARACION) {
+					p.setEstado(EstadoPedido.ENTREGADO);
+					return this.pedidoRepository.save(p);
+				}
 			}
-			return this.pedidoRepository.save(p);
 		}
 		else throw new RecursoNoEncontradoException("No se encontro el pedido: ", idPedido);
+		return null;
     }
     
 	@Override
 	public ArrayList<Pedido> pedidosPorObra(Obra obra) {
-		// TODO Auto-generated method stub
-		return pedidoRepository.getPedidosPorObra(obra.getId());
+		// TODO la query solo pasa id de la obra
+		ArrayList<Pedido> resultado = new ArrayList<>();
+		resultado.addAll(pedidoRepository.getPedidosPorObra(obra.getId()));
+		return resultado;
 	}
 	
 	@Override
 	public ArrayList<Pedido> pedidosPorEstado(EstadoPedido estadoPedido) {
-		// TODO Auto-generated method stub
-		return pedidoRepository.getPedidosPorEstado(estadoPedido.ordinal());
+		// TODO query
+		ArrayList<Pedido> resultado = new ArrayList<>();
+		resultado.addAll(pedidoRepository.getPedidosPorEstado(estadoPedido.ordinal()));
+		return resultado;
 	}
 	
 	@Override
 	public ArrayList<Pedido> pedidosPorCliente(Integer idCliente) throws RecursoNoEncontradoException {
-		// TODO Auto-generated method stub
+		// TODO esto usa lo que hay que ver con tamara
 		/*
 		Pido obras segun idCliente y despues pido los pedidos segun las obras
 		*/
@@ -142,6 +177,12 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 	
 	private Boolean verificarStock(Producto producto, Integer cantidad) {
-		return productoSrv.stockDisponible(producto)>=cantidad;
+		try {
+			return productoSrv.stockDisponible(producto)>=cantidad;
+		} catch (RecursoNoEncontradoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
