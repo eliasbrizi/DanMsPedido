@@ -1,5 +1,6 @@
 package com.brikton.labapps.mspedidos.service.implementation;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,9 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido crearPedido(Pedido p) throws RiesgoException {
+
+		if (p.getFechaPedido()==null) p.setFechaPedido(Instant.now());
+
         boolean hayStock = p.getDetalle()
 		.stream()
 		.allMatch(dp -> verificarStock(dp.getProducto(),dp.getCantidad()));
@@ -69,12 +73,7 @@ public class PedidoServiceImpl implements PedidoService {
 		} else {
 			p.setEstado(EstadoPedido.PENDIENTE);
 		}
-		obraRepository.save(p.getObra());
-		for (DetallePedido d: p.getDetalle()) {
-			productoRepository.save(d.getProducto());
-			detallePedidoRepository.save(d);
-		}
-		return this.pedidoRepository.save(p);
+		return guardar(p);
     }
 	
     @Override
@@ -108,13 +107,13 @@ public class PedidoServiceImpl implements PedidoService {
 						p.setEstado(EstadoPedido.ACEPTADO);
 					} else {
 						p.setEstado(EstadoPedido.RECHAZADO);
-						pedidoRepository.save(p);
+						guardar(p);
 						throw new RiesgoException("El pedido" + idPedido +" genera saldo deudor");
 					}
 				} else {
 					p.setEstado(EstadoPedido.PENDIENTE);
 				}
-				return this.pedidoRepository.save(p);
+				return this.guardar(p);
 			} else if (nuevoEstadoPedido == EstadoPedido.CANCELADO) {
 				/*
 				Logica de cancelar pedido
@@ -122,7 +121,7 @@ public class PedidoServiceImpl implements PedidoService {
 				if (e == EstadoPedido.NUEVO || e == EstadoPedido.CONFIRMADO
 				|| e == EstadoPedido.PENDIENTE ) {
 					p.setEstado(EstadoPedido.CANCELADO);
-					return this.pedidoRepository.save(p);
+					return this.guardar(p);
 				}
 			} else if (nuevoEstadoPedido == EstadoPedido.EN_PREPARACION) {
 				/*
@@ -130,7 +129,7 @@ public class PedidoServiceImpl implements PedidoService {
 				*/
 				if (e == EstadoPedido.CONFIRMADO ) {
 					p.setEstado(EstadoPedido.EN_PREPARACION);
-					return this.pedidoRepository.save(p);
+					return this.guardar(p);
 				}
 			} else if (nuevoEstadoPedido == EstadoPedido.ENTREGADO) {
 				/*
@@ -138,7 +137,7 @@ public class PedidoServiceImpl implements PedidoService {
 				*/
 				if (e == EstadoPedido.EN_PREPARACION) {
 					p.setEstado(EstadoPedido.ENTREGADO);
-					return this.pedidoRepository.save(p);
+					return this.guardar(p);
 				}
 			}
 		}
@@ -158,7 +157,7 @@ public class PedidoServiceImpl implements PedidoService {
 	public ArrayList<Pedido> pedidosPorEstado(EstadoPedido estadoPedido) {
 		// TODO query
 		ArrayList<Pedido> resultado = new ArrayList<>();
-		resultado.addAll(pedidoRepository.getPedidosPorEstado(estadoPedido.ordinal()));
+		resultado.addAll(pedidoRepository.getPedidosPorEstado(estadoPedido));
 		return resultado;
 	}
 	
@@ -183,7 +182,7 @@ public class PedidoServiceImpl implements PedidoService {
 	
 	@Override
 	public void actualizarPedido(Pedido p){
-		pedidoRepository.save(p);
+		guardar(p);
 	}
 	
 	private boolean esDeBajoRiesgo(Obra obra, Double nuevoSaldo) {
@@ -199,5 +198,14 @@ public class PedidoServiceImpl implements PedidoService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private Pedido guardar(Pedido p){
+		obraRepository.save(p.getObra());
+		for (DetallePedido d: p.getDetalle()) {
+			productoRepository.save(d.getProducto());
+			detallePedidoRepository.save(d);
+		}
+		return this.pedidoRepository.save(p);
 	}
 }
