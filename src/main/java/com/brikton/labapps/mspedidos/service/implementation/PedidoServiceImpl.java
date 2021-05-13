@@ -21,6 +21,7 @@ import com.brikton.labapps.mspedidos.service.PedidoService;
 import com.brikton.labapps.mspedidos.service.ProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +41,9 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Autowired
     ProductoService productoSrv;
+
+	@Autowired
+	JmsTemplate jms;
 
     @Override
     public Pedido crearPedido(Pedido p) throws RiesgoException {
@@ -105,6 +109,7 @@ public class PedidoServiceImpl implements PedidoService {
 				if(hayStock ) {
 					if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
 						p.setEstado(EstadoPedido.ACEPTADO);
+						jms.convertAndSend("COLA_PEDIDOS", p);
 					} else {
 						p.setEstado(EstadoPedido.RECHAZADO);
 						guardar(p);
