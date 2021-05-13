@@ -21,7 +21,6 @@ public class DetallePedidoRest {
     
     @Autowired
     DetallePedidoService service;
-    //post put delete
 
     @PostMapping()
     public ResponseEntity<?> agregarItem(@RequestBody DetallePedido detalle, @RequestParam Integer idPedido){
@@ -36,7 +35,7 @@ public class DetallePedidoRest {
     @PutMapping
     public ResponseEntity<?> modificarDetalle(@RequestBody DetallePedido detalle){
         try {
-            service.actualizarDetalle(detalle);
+           detalle = service.actualizarDetalle(detalle);
         } catch (RecursoNoEncontradoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -50,6 +49,6 @@ public class DetallePedidoRest {
         } catch (RecursoNoEncontradoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Detalle Eliminado");
     }
 }

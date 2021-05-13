@@ -1,6 +1,7 @@
 package com.brikton.labapps.mspedidos.service.implementation;
 
 import com.brikton.labapps.mspedidos.dao.DetallePedidoRepository;
+import com.brikton.labapps.mspedidos.dao.ProductoRepository;
 import com.brikton.labapps.mspedidos.domain.DetallePedido;
 import com.brikton.labapps.mspedidos.domain.Pedido;
 import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
@@ -15,6 +16,8 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 
     @Autowired
     DetallePedidoRepository detallePedidoRepository;
+    @Autowired
+    ProductoRepository productoRepository;
 
     @Autowired
     PedidoService pedidoService;
@@ -22,18 +25,25 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
     @Override
     public DetallePedido agregarDetalle(DetallePedido detalle, Integer idPedido) throws RecursoNoEncontradoException {
         Pedido pedido = pedidoService.getPedido(idPedido);
+        
+        productoRepository.save(detalle.getProducto());
+        detallePedidoRepository.save(detalle);
+
         pedido.agregarDetalle(detalle);
         pedidoService.actualizarPedido(pedido);
         return detalle;
     }
 
     @Override
-    public void actualizarDetalle(DetallePedido detalle) throws RecursoNoEncontradoException {
+    public DetallePedido actualizarDetalle(DetallePedido detalle) throws RecursoNoEncontradoException {
         if (detallePedidoRepository.existsById(detalle.getId())){
-            detallePedidoRepository.save(detalle);
+
+        productoRepository.save(detalle.getProducto());
+        return detallePedidoRepository.save(detalle);
+
         } else {
             throw new RecursoNoEncontradoException("Detalle de pedido no encontrado: ", detalle.getId());
-        }
+        } 
     }
 
     @Override

@@ -7,7 +7,7 @@ public interface DetallePedidoService {
 
     public DetallePedido agregarDetalle(DetallePedido detalle, Integer idPedido) throws RecursoNoEncontradoException;
 
-    public void actualizarDetalle(DetallePedido detalle) throws RecursoNoEncontradoException;
+    public DetallePedido actualizarDetalle(DetallePedido detalle) throws RecursoNoEncontradoException;
 
     void eliminarDetalle(DetallePedido detalle) throws RecursoNoEncontradoException;
 
