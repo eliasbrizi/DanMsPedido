@@ -7,16 +7,19 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Pedido {
 
     @Id
     @Column(name = "id_pedido")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 	private Instant fechaPedido;
     @OneToOne

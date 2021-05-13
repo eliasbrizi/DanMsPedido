@@ -76,7 +76,6 @@ public class PedidoRest {
         } catch (RiesgoException e1) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
         return ResponseEntity.ok(pedido);
     }
 

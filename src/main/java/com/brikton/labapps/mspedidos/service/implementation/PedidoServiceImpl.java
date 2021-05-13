@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.brikton.labapps.mspedidos.dao.DetallePedidoRepository;
+import com.brikton.labapps.mspedidos.dao.ObraRepository;
 import com.brikton.labapps.mspedidos.dao.PedidoRepository;
+import com.brikton.labapps.mspedidos.dao.ProductoRepository;
+import com.brikton.labapps.mspedidos.domain.DetallePedido;
 import com.brikton.labapps.mspedidos.domain.EstadoPedido;
 import com.brikton.labapps.mspedidos.domain.Obra;
 import com.brikton.labapps.mspedidos.domain.Pedido;
@@ -23,6 +27,12 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Autowired
     PedidoRepository pedidoRepository;
+	@Autowired
+	DetallePedidoRepository detallePedidoRepository;
+	@Autowired
+	ProductoRepository productoRepository;
+	@Autowired
+	ObraRepository obraRepository;
     
     @Autowired
 	ClienteService clienteSrv;
@@ -58,6 +68,11 @@ public class PedidoServiceImpl implements PedidoService {
 				}
 		} else {
 			p.setEstado(EstadoPedido.PENDIENTE);
+		}
+		obraRepository.save(p.getObra());
+		for (DetallePedido d: p.getDetalle()) {
+			productoRepository.save(d.getProducto());
+			detallePedidoRepository.save(d);
 		}
 		return this.pedidoRepository.save(p);
     }

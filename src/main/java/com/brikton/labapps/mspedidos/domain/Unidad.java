@@ -2,7 +2,8 @@ package com.brikton.labapps.mspedidos.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
@@ -10,6 +11,7 @@ public class Unidad {
 
 	@Id
 	@Column(name = "id_unidad")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String descripcion;
 	
