@@ -109,6 +109,7 @@ public class PedidoServiceImpl implements PedidoService {
 				if(hayStock ) {
 					if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
 						p.setEstado(EstadoPedido.ACEPTADO);
+						//TODO ver como enviar la info de stockd
 						jms.convertAndSend("COLA_PEDIDOS", p);
 					} else {
 						p.setEstado(EstadoPedido.RECHAZADO);
