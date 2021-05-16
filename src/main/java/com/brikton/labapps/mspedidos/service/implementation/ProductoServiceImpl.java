@@ -19,17 +19,18 @@ public class ProductoServiceImpl implements ProductoService {
 	private final String apiProducto = "api/producto";
     private final String puerto = "9001";
     
-    // @Override
-    // public Integer stockDisponible(Producto producto) throws RecursoNoEncontradoException {
-    //     // TODO ver con kton
-    //     String server = urlServer+":"+puerto+"/"+apiProducto;
-    //     ResponseEntity<Integer> respuesta = restTemplate.exchange(server+"/stock?idProducto="+producto.getId(), HttpMethod.GET, null , Integer .class);
-    //     if (respuesta.getStatusCode() == HttpStatus.OK) return respuesta.getBody();
-    //     else throw new RecursoNoEncontradoException("No se obtuvo respuesta con stock",0);
-    // }
-     @Override
+    @Override
     public Integer stockDisponible(Producto producto) throws RecursoNoEncontradoException {
-        // TODO sacar
-        return 1000;
+        // TODO ver con kton
+        String server = urlServer+":"+puerto+"/"+apiProducto;
+        // ResponseEntity<Integer> respuesta = restTemplate.exchange(server+"/stock?idProducto="+producto.getId(), HttpMethod.GET, null , Integer .class);
+        ResponseEntity<Integer> respuesta = restTemplate.exchange(server+"/stock?idProducto="+producto.getId(), HttpMethod.GET, null , Integer.class);
+        if (respuesta.getStatusCode() == HttpStatus.OK) return respuesta.getBody();
+        else throw new RecursoNoEncontradoException("No se obtuvo respuesta con stock",0);
     }
+    //  @Override
+    // public Integer stockDisponible(Producto producto) throws RecursoNoEncontradoException {
+    //     // TODO sacar
+    //     return 1000;
+    // }
 }

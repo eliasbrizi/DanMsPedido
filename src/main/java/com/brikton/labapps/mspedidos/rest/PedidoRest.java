@@ -48,6 +48,7 @@ public class PedidoRest {
             }
             return ResponseEntity.ok(creado);
         } else {
+            System.out.println("puto");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
