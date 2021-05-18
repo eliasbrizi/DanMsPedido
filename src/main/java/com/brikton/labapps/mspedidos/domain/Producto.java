@@ -1,10 +1,6 @@
 package com.brikton.labapps.mspedidos.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Producto {
@@ -15,8 +11,17 @@ public class Producto {
     private Integer id;
     private String descripcion;
     private Double precio;
-   
+    private String nombre;
+
     public Producto() {
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public Integer getId() {
@@ -38,7 +43,7 @@ public class Producto {
     public Double getPrecio() {
         return precio;
     }
-    
+
     public void setPrecio(Double precio) {
         this.precio = precio;
     }
