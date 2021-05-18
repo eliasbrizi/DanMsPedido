@@ -27,7 +27,7 @@ public class DetallePedidoRest {
         try {
             detalle = service.agregarDetalle(detalle,idPedido);
         } catch (RecursoNoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok(detalle);
     }
@@ -37,7 +37,7 @@ public class DetallePedidoRest {
         try {
            detalle = service.actualizarDetalle(detalle);
         } catch (RecursoNoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
@@ -47,7 +47,7 @@ public class DetallePedidoRest {
         try {
             service.eliminarDetalle(detalle);
         } catch (RecursoNoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok("Detalle Eliminado");
     }
