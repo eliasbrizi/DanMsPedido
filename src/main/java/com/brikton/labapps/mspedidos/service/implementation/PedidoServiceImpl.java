@@ -72,7 +72,7 @@ public class PedidoServiceImpl implements PedidoService {
 				if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
 					p.setEstado(EstadoPedido.NUEVO);
 				} else {
-					throw new RiesgoException("riesgo");
+					throw new RiesgoException("Genera deuda");
 				}
 		} else {
 			p.setEstado(EstadoPedido.PENDIENTE);

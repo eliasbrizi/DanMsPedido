@@ -27,9 +27,5 @@ public class ProductoServiceImpl implements ProductoService {
         if (respuesta.getStatusCode() == HttpStatus.OK) return respuesta.getBody();
         else throw new RecursoNoEncontradoException("No se obtuvo respuesta con stock", 0);
     }
-    //  @Override
-    // public Integer stockDisponible(Producto producto) throws RecursoNoEncontradoException {
-    //     // TODO sacar
-    //     return 1000;
-    // }
+
 }

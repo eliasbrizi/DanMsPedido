@@ -48,7 +48,6 @@ public class PedidoRest {
             }
             return ResponseEntity.ok(creado);
         } else {
-            System.out.println("puto");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -67,15 +66,15 @@ public class PedidoRest {
     }
 
     @PutMapping
-    public ResponseEntity<Pedido> actualizarEstadoPedido(@RequestParam Integer id,
+    public ResponseEntity<?> actualizarEstadoPedido(@RequestParam Integer id,
                                     @RequestParam String nuevoEstado){
         Pedido pedido = null;
         try {
             pedido = pedidoService.actualizarEstadoPedido(id,EstadoPedido.valueOf(nuevoEstado.toUpperCase()));
         } catch (RecursoNoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RiesgoException e1) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e1.getMessage());
         }
         return ResponseEntity.ok(pedido);
     }
@@ -95,12 +94,12 @@ public class PedidoRest {
     }
 
     @GetMapping(path = "/cliente")
-    public ResponseEntity<List<Pedido>> pedidosPorCliente(@RequestParam Integer idCliente){
+    public ResponseEntity<?> pedidosPorCliente(@RequestParam Integer idCliente){
         ArrayList<Pedido> pedidos = new ArrayList<>();
         try {
             pedidos = pedidoService.pedidosPorCliente(idCliente);
         } catch (RecursoNoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok(pedidos);
     }
