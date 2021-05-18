@@ -11,7 +11,7 @@ public class Unidad {
 
 	@Id
 	@Column(name = "id_unidad")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String descripcion;
 	

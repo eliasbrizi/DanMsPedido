@@ -7,7 +7,7 @@ public class Producto {
 
     @Id
     @Column(name = "id_producto")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    // @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String descripcion;
     private Double precio;
