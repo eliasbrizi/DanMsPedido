@@ -2,6 +2,7 @@ package com.brikton.labapps.mspedidos.service.implementation;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import com.brikton.labapps.mspedidos.domain.EstadoPedido;
 import com.brikton.labapps.mspedidos.domain.Obra;
 import com.brikton.labapps.mspedidos.domain.Pedido;
 import com.brikton.labapps.mspedidos.domain.Producto;
+import com.brikton.labapps.mspedidos.dto.DetallePedidoDTO;
 import com.brikton.labapps.mspedidos.exception.RecursoNoEncontradoException;
 import com.brikton.labapps.mspedidos.exception.RiesgoException;
 import com.brikton.labapps.mspedidos.service.ClienteService;
@@ -21,6 +23,7 @@ import com.brikton.labapps.mspedidos.service.PedidoService;
 import com.brikton.labapps.mspedidos.service.ProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +47,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 	@Autowired
 	JmsTemplate jms;
-
+	
     @Override
     public Pedido crearPedido(Pedido p) throws RiesgoException {
 
@@ -109,8 +112,18 @@ public class PedidoServiceImpl implements PedidoService {
 				if(hayStock ) {
 					if(!generaDeuda || (generaDeuda && this.esDeBajoRiesgo(p.getObra(),nuevoSaldo) ))  {
 						p.setEstado(EstadoPedido.ACEPTADO);
-						//TODO ver como enviar la info de stockd
-						jms.convertAndSend("COLA_PEDIDOS", p);
+						ArrayList<DetallePedidoDTO> detalles = new ArrayList<>();
+						p.getDetalle().stream().forEach(d -> detalles.add(new DetallePedidoDTO(d)));
+						for(DetallePedidoDTO d: detalles)
+							try {
+								HashMap<String,Integer> map = new HashMap<>();
+								map.put("idMaterial", d.getIdMaterial());
+								map.put("cantidad",d.getCantidad());
+								jms.convertAndSend("COLA_PEDIDOS", map);
+							} catch (JmsException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 					} else {
 						p.setEstado(EstadoPedido.RECHAZADO);
 						guardar(p);
